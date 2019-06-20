@@ -8,11 +8,10 @@ module.exports = (passport) => {
     callbackURL: '/auth/kakao/callback',
   }, async (accessToken, refreshToken, profile, done) => {
     try {
-      const exUser = await User.find({ where: { snsId: profile.id, provider: 'kakao' } });
+      const exUser = await User.findOne({ where: { snsId: profile.id, provider: 'kakao' } });
       if (exUser) {
         done(null, exUser);
       } else {
-        console.log('유저는 : '+User);
         const newUser = await User.create({
           email: profile._json && profile._json.kaccount_email,
           nick: profile.displayName,

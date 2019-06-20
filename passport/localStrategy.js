@@ -12,7 +12,8 @@ module.exports = (passport) => {
     //req.body 의 속성명을 적어주면 됩니다 reqbody.email에 이메일이 req.body.password 에 비밀번호가 담겨 들어오므로 email과 password를 각각 넣어줬습니다
   }, async (email, password, done) => {
     try {
-      const exUser = await User.find({ where: { email } });
+      console.log(User.email);
+      const exUser = await User.findOne({ where: { email } });
       if (exUser) {
         const result = await bcrypt.compare(password, exUser.password);
         if (result) {

@@ -2,16 +2,16 @@ const express = require('express');
 const passport = require('passport');
 const bcrypt = require('bcrypt');
 const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
-const { User } = require('../models/user');
-
+const { User } = require('../models');
 
 const router  = express.Router();
 
 router.post('/join', isNotLoggedIn, async (req, res, next) => {
+  
   const { email, nick, password } = req.body;
   try {
-    console.log('유저는 : '+User);
-    const exUser = await User.find({ where: { email } });
+    console.log('회원가입들어옴');
+    const exUser =  User.findOne({ where: { email } });
     if (exUser) {
       req.flash('joinError', '이미 가입된 이메일입니다.');
       return res.redirect('/join');
@@ -77,5 +77,16 @@ router.get('/kakao/callback', passport.authenticate('kakao', {
 }), (req, res) => {
   res.redirect('/');
 });
+
+router.get('/google',
+  passport.authenticate('google', { scope: ['profile'] }));
+
+router.get('/google/callback', 
+  passport.authenticate('google', { failureRedirect: '/' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/');
+  });
+
 
 module.exports = router;
